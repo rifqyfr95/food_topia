@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_topia/domain/entities/meals_data.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
@@ -37,18 +38,19 @@ class _FoodListPageState extends State<FoodListPage> {
     });
   }
 
-  Future<List<String>> getData() async {
-    List<String> result = [];
+  Future<List<MealsData>> getData() async {
+    List<MealsData> result = [];
     String base_url = "https://www.themealdb.com/api/json/v1/1/search.php?f=b";
     var datas = await http.get(Uri.parse(base_url));
     var dataBodies = json.decode(datas.body);
     List<dynamic> meals = dataBodies['meals'];
-    for (var dataMeals in meals) {
-      result.add(dataMeals['strMeal']);
+    meals.forEach((element) {
+      MealsData mealsData = MealsData(mealsName: element['strMeal'], mealsPictURL: element['strMealThumb'], mealsTags: element['strTags'] ?? "", mealsInstructions: element['strInstructions']);
+      result.add(mealsData);
       if (result.length == 20) {
-        break;
+        return;
       }
-    }
+    });
     return result;
   }
 
@@ -57,6 +59,7 @@ class _FoodListPageState extends State<FoodListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        elevation: 0,
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(10.0),
@@ -64,11 +67,11 @@ class _FoodListPageState extends State<FoodListPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'List of meal started with b',
+              'List of meal',
             ),
             FutureBuilder(
-              initialData: List<String>.empty(),
-                builder: (context, AsyncSnapshot<List<String>> snapShotData) {
+              initialData: List<MealsData>.empty(),
+                builder: (context, AsyncSnapshot<List<MealsData>> snapShotData) {
               if (snapShotData.connectionState == ConnectionState.done &&
                   snapShotData.hasData) {
                 return ListView.builder(
@@ -77,9 +80,10 @@ class _FoodListPageState extends State<FoodListPage> {
                   itemCount: snapShotData.data?.length,
                   itemBuilder: (context, index) {
                     print(snapShotData.data);
-                    String title = snapShotData.data![index];
                     return ListTile(
-                      title: Text(title),
+                      title: Text(snapShotData.data![index].mealsName),
+                      subtitle: Text(snapShotData.data![index].mealsTags),
+                      leading: Image.network(snapShotData.data![index].mealsPictURL),
                     );
                   },
                 );
@@ -99,7 +103,7 @@ class _FoodListPageState extends State<FoodListPage> {
   }
   @override
   void initState() {
-    // getData();
+    getData();
     super.initState();
   }
 }

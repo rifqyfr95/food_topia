@@ -13,12 +13,14 @@ class Meal extends DataClass implements Insertable<Meal> {
   final String mealsPictURL;
   final String mealsTags;
   final String mealsDesc;
+  final int mealsFavourite;
   Meal(
       {required this.mealsId,
       required this.mealsName,
       required this.mealsPictURL,
       required this.mealsTags,
-      required this.mealsDesc});
+      required this.mealsDesc,
+      required this.mealsFavourite});
   factory Meal.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -33,6 +35,8 @@ class Meal extends DataClass implements Insertable<Meal> {
           .mapFromDatabaseResponse(data['${effectivePrefix}meals_tags'])!,
       mealsDesc: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}meals_desc'])!,
+      mealsFavourite: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}meals_favourite'])!,
     );
   }
   @override
@@ -43,6 +47,7 @@ class Meal extends DataClass implements Insertable<Meal> {
     map['meals_pict_u_r_l'] = Variable<String>(mealsPictURL);
     map['meals_tags'] = Variable<String>(mealsTags);
     map['meals_desc'] = Variable<String>(mealsDesc);
+    map['meals_favourite'] = Variable<int>(mealsFavourite);
     return map;
   }
 
@@ -53,6 +58,7 @@ class Meal extends DataClass implements Insertable<Meal> {
       mealsPictURL: Value(mealsPictURL),
       mealsTags: Value(mealsTags),
       mealsDesc: Value(mealsDesc),
+      mealsFavourite: Value(mealsFavourite),
     );
   }
 
@@ -65,6 +71,7 @@ class Meal extends DataClass implements Insertable<Meal> {
       mealsPictURL: serializer.fromJson<String>(json['mealsPictURL']),
       mealsTags: serializer.fromJson<String>(json['mealsTags']),
       mealsDesc: serializer.fromJson<String>(json['mealsDesc']),
+      mealsFavourite: serializer.fromJson<int>(json['mealsFavourite']),
     );
   }
   @override
@@ -76,6 +83,7 @@ class Meal extends DataClass implements Insertable<Meal> {
       'mealsPictURL': serializer.toJson<String>(mealsPictURL),
       'mealsTags': serializer.toJson<String>(mealsTags),
       'mealsDesc': serializer.toJson<String>(mealsDesc),
+      'mealsFavourite': serializer.toJson<int>(mealsFavourite),
     };
   }
 
@@ -84,13 +92,15 @@ class Meal extends DataClass implements Insertable<Meal> {
           String? mealsName,
           String? mealsPictURL,
           String? mealsTags,
-          String? mealsDesc}) =>
+          String? mealsDesc,
+          int? mealsFavourite}) =>
       Meal(
         mealsId: mealsId ?? this.mealsId,
         mealsName: mealsName ?? this.mealsName,
         mealsPictURL: mealsPictURL ?? this.mealsPictURL,
         mealsTags: mealsTags ?? this.mealsTags,
         mealsDesc: mealsDesc ?? this.mealsDesc,
+        mealsFavourite: mealsFavourite ?? this.mealsFavourite,
       );
   @override
   String toString() {
@@ -99,7 +109,8 @@ class Meal extends DataClass implements Insertable<Meal> {
           ..write('mealsName: $mealsName, ')
           ..write('mealsPictURL: $mealsPictURL, ')
           ..write('mealsTags: $mealsTags, ')
-          ..write('mealsDesc: $mealsDesc')
+          ..write('mealsDesc: $mealsDesc, ')
+          ..write('mealsFavourite: $mealsFavourite')
           ..write(')'))
         .toString();
   }
@@ -109,8 +120,10 @@ class Meal extends DataClass implements Insertable<Meal> {
       mealsId.hashCode,
       $mrjc(
           mealsName.hashCode,
-          $mrjc(mealsPictURL.hashCode,
-              $mrjc(mealsTags.hashCode, mealsDesc.hashCode)))));
+          $mrjc(
+              mealsPictURL.hashCode,
+              $mrjc(mealsTags.hashCode,
+                  $mrjc(mealsDesc.hashCode, mealsFavourite.hashCode))))));
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -119,7 +132,8 @@ class Meal extends DataClass implements Insertable<Meal> {
           other.mealsName == this.mealsName &&
           other.mealsPictURL == this.mealsPictURL &&
           other.mealsTags == this.mealsTags &&
-          other.mealsDesc == this.mealsDesc);
+          other.mealsDesc == this.mealsDesc &&
+          other.mealsFavourite == this.mealsFavourite);
 }
 
 class MealsCompanion extends UpdateCompanion<Meal> {
@@ -128,30 +142,32 @@ class MealsCompanion extends UpdateCompanion<Meal> {
   final Value<String> mealsPictURL;
   final Value<String> mealsTags;
   final Value<String> mealsDesc;
+  final Value<int> mealsFavourite;
   const MealsCompanion({
     this.mealsId = const Value.absent(),
     this.mealsName = const Value.absent(),
     this.mealsPictURL = const Value.absent(),
     this.mealsTags = const Value.absent(),
     this.mealsDesc = const Value.absent(),
+    this.mealsFavourite = const Value.absent(),
   });
   MealsCompanion.insert({
     required String mealsId,
     required String mealsName,
     required String mealsPictURL,
-    required String mealsTags,
-    required String mealsDesc,
+    this.mealsTags = const Value.absent(),
+    this.mealsDesc = const Value.absent(),
+    this.mealsFavourite = const Value.absent(),
   })  : mealsId = Value(mealsId),
         mealsName = Value(mealsName),
-        mealsPictURL = Value(mealsPictURL),
-        mealsTags = Value(mealsTags),
-        mealsDesc = Value(mealsDesc);
+        mealsPictURL = Value(mealsPictURL);
   static Insertable<Meal> custom({
     Expression<String>? mealsId,
     Expression<String>? mealsName,
     Expression<String>? mealsPictURL,
     Expression<String>? mealsTags,
     Expression<String>? mealsDesc,
+    Expression<int>? mealsFavourite,
   }) {
     return RawValuesInsertable({
       if (mealsId != null) 'meals_id': mealsId,
@@ -159,6 +175,7 @@ class MealsCompanion extends UpdateCompanion<Meal> {
       if (mealsPictURL != null) 'meals_pict_u_r_l': mealsPictURL,
       if (mealsTags != null) 'meals_tags': mealsTags,
       if (mealsDesc != null) 'meals_desc': mealsDesc,
+      if (mealsFavourite != null) 'meals_favourite': mealsFavourite,
     });
   }
 
@@ -167,13 +184,15 @@ class MealsCompanion extends UpdateCompanion<Meal> {
       Value<String>? mealsName,
       Value<String>? mealsPictURL,
       Value<String>? mealsTags,
-      Value<String>? mealsDesc}) {
+      Value<String>? mealsDesc,
+      Value<int>? mealsFavourite}) {
     return MealsCompanion(
       mealsId: mealsId ?? this.mealsId,
       mealsName: mealsName ?? this.mealsName,
       mealsPictURL: mealsPictURL ?? this.mealsPictURL,
       mealsTags: mealsTags ?? this.mealsTags,
       mealsDesc: mealsDesc ?? this.mealsDesc,
+      mealsFavourite: mealsFavourite ?? this.mealsFavourite,
     );
   }
 
@@ -195,6 +214,9 @@ class MealsCompanion extends UpdateCompanion<Meal> {
     if (mealsDesc.present) {
       map['meals_desc'] = Variable<String>(mealsDesc.value);
     }
+    if (mealsFavourite.present) {
+      map['meals_favourite'] = Variable<int>(mealsFavourite.value);
+    }
     return map;
   }
 
@@ -205,7 +227,8 @@ class MealsCompanion extends UpdateCompanion<Meal> {
           ..write('mealsName: $mealsName, ')
           ..write('mealsPictURL: $mealsPictURL, ')
           ..write('mealsTags: $mealsTags, ')
-          ..write('mealsDesc: $mealsDesc')
+          ..write('mealsDesc: $mealsDesc, ')
+          ..write('mealsFavourite: $mealsFavourite')
           ..write(')'))
         .toString();
   }
@@ -241,19 +264,28 @@ class $MealsTable extends Meals with TableInfo<$MealsTable, Meal> {
   late final GeneratedColumn<String?> mealsTags = GeneratedColumn<String?>(
       'meals_tags', aliasedName, false,
       additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
       typeName: 'TEXT',
-      requiredDuringInsert: true);
+      requiredDuringInsert: false,
+      defaultValue: const Constant(""));
   final VerificationMeta _mealsDescMeta = const VerificationMeta('mealsDesc');
   late final GeneratedColumn<String?> mealsDesc = GeneratedColumn<String?>(
       'meals_desc', aliasedName, false,
       additionalChecks: GeneratedColumn.checkTextLength(
-          minTextLength: 1, maxTextLength: 1000),
+          minTextLength: 0, maxTextLength: 9999),
       typeName: 'TEXT',
-      requiredDuringInsert: true);
+      requiredDuringInsert: false,
+      defaultValue: const Constant(""));
+  final VerificationMeta _mealsFavouriteMeta =
+      const VerificationMeta('mealsFavourite');
+  late final GeneratedColumn<int?> mealsFavourite = GeneratedColumn<int?>(
+      'meals_favourite', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   @override
   List<GeneratedColumn> get $columns =>
-      [mealsId, mealsName, mealsPictURL, mealsTags, mealsDesc];
+      [mealsId, mealsName, mealsPictURL, mealsTags, mealsDesc, mealsFavourite];
   @override
   String get aliasedName => _alias ?? 'meals';
   @override
@@ -286,14 +318,16 @@ class $MealsTable extends Meals with TableInfo<$MealsTable, Meal> {
     if (data.containsKey('meals_tags')) {
       context.handle(_mealsTagsMeta,
           mealsTags.isAcceptableOrUnknown(data['meals_tags']!, _mealsTagsMeta));
-    } else if (isInserting) {
-      context.missing(_mealsTagsMeta);
     }
     if (data.containsKey('meals_desc')) {
       context.handle(_mealsDescMeta,
           mealsDesc.isAcceptableOrUnknown(data['meals_desc']!, _mealsDescMeta));
-    } else if (isInserting) {
-      context.missing(_mealsDescMeta);
+    }
+    if (data.containsKey('meals_favourite')) {
+      context.handle(
+          _mealsFavouriteMeta,
+          mealsFavourite.isAcceptableOrUnknown(
+              data['meals_favourite']!, _mealsFavouriteMeta));
     }
     return context;
   }
@@ -312,157 +346,12 @@ class $MealsTable extends Meals with TableInfo<$MealsTable, Meal> {
   }
 }
 
-class FavoriteMeal extends DataClass implements Insertable<FavoriteMeal> {
-  final String mealsId;
-  FavoriteMeal({required this.mealsId});
-  factory FavoriteMeal.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return FavoriteMeal(
-      mealsId: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}meals_id'])!,
-    );
-  }
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['meals_id'] = Variable<String>(mealsId);
-    return map;
-  }
-
-  FavoriteMealsCompanion toCompanion(bool nullToAbsent) {
-    return FavoriteMealsCompanion(
-      mealsId: Value(mealsId),
-    );
-  }
-
-  factory FavoriteMeal.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
-    return FavoriteMeal(
-      mealsId: serializer.fromJson<String>(json['mealsId']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'mealsId': serializer.toJson<String>(mealsId),
-    };
-  }
-
-  FavoriteMeal copyWith({String? mealsId}) => FavoriteMeal(
-        mealsId: mealsId ?? this.mealsId,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('FavoriteMeal(')
-          ..write('mealsId: $mealsId')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => $mrjf(mealsId.hashCode);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is FavoriteMeal && other.mealsId == this.mealsId);
-}
-
-class FavoriteMealsCompanion extends UpdateCompanion<FavoriteMeal> {
-  final Value<String> mealsId;
-  const FavoriteMealsCompanion({
-    this.mealsId = const Value.absent(),
-  });
-  FavoriteMealsCompanion.insert({
-    required String mealsId,
-  }) : mealsId = Value(mealsId);
-  static Insertable<FavoriteMeal> custom({
-    Expression<String>? mealsId,
-  }) {
-    return RawValuesInsertable({
-      if (mealsId != null) 'meals_id': mealsId,
-    });
-  }
-
-  FavoriteMealsCompanion copyWith({Value<String>? mealsId}) {
-    return FavoriteMealsCompanion(
-      mealsId: mealsId ?? this.mealsId,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (mealsId.present) {
-      map['meals_id'] = Variable<String>(mealsId.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('FavoriteMealsCompanion(')
-          ..write('mealsId: $mealsId')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $FavoriteMealsTable extends FavoriteMeals
-    with TableInfo<$FavoriteMealsTable, FavoriteMeal> {
-  final GeneratedDatabase _db;
-  final String? _alias;
-  $FavoriteMealsTable(this._db, [this._alias]);
-  final VerificationMeta _mealsIdMeta = const VerificationMeta('mealsId');
-  late final GeneratedColumn<String?> mealsId = GeneratedColumn<String?>(
-      'meals_id', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 32),
-      typeName: 'TEXT',
-      requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns => [mealsId];
-  @override
-  String get aliasedName => _alias ?? 'favorite_meals';
-  @override
-  String get actualTableName => 'favorite_meals';
-  @override
-  VerificationContext validateIntegrity(Insertable<FavoriteMeal> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('meals_id')) {
-      context.handle(_mealsIdMeta,
-          mealsId.isAcceptableOrUnknown(data['meals_id']!, _mealsIdMeta));
-    } else if (isInserting) {
-      context.missing(_mealsIdMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
-  @override
-  FavoriteMeal map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return FavoriteMeal.fromData(data, _db,
-        prefix: tablePrefix != null ? '$tablePrefix.' : null);
-  }
-
-  @override
-  $FavoriteMealsTable createAlias(String alias) {
-    return $FavoriteMealsTable(_db, alias);
-  }
-}
-
 abstract class _$FoodtopiaDatabase extends GeneratedDatabase {
   _$FoodtopiaDatabase(QueryExecutor e)
       : super(SqlTypeSystem.defaultInstance, e);
   late final $MealsTable meals = $MealsTable(this);
-  late final $FavoriteMealsTable favoriteMeals = $FavoriteMealsTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [meals, favoriteMeals];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [meals];
 }

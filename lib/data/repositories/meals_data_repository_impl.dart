@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:food_topia/core/error/exception.dart';
-
 import 'package:food_topia/core/error/failures.dart';
 import 'package:food_topia/domain/entities/meals_data.dart';
 import 'package:food_topia/domain/repositories/meals_data_repository.dart';
@@ -57,23 +56,4 @@ class MealsDataRepositoryImpl implements MealsDataRepository {
     }
   }
 
-  @override
-  Future<Either<Failure, MealsData>> getFavoriteMealsDataById(String mealsId) async {
-    try{
-      final localMealsData = await localDataSource.getFavoriteMealsDataById(mealsId);
-      return Right(localMealsData);
-    } on CacheException {
-      return Left(CacheFailure());
-    }
-  }
-
-  @override
-  Future<Either<Failure, List<MealsData>>> getListFavoriteMealsData() async {
-    try{
-      final localMealsData = await localDataSource.getFavoriteMealsData();
-      return Right(localMealsData);
-    } on CacheException {
-      return Left(CacheFailure());
-    }
-  }
 }

@@ -7,21 +7,25 @@ class MealsDataModel extends MealsData {
       required String mealsName,
       required String mealsPictURL,
       required String mealsTags,
-      required String mealsInstructions})
+      required String mealsInstructions,
+      required int mealsFavourite})
       : super(
             mealsId: mealsId,
             mealsName: mealsName,
             mealsPictURL: mealsPictURL,
             mealsTags: mealsTags,
-            mealsInstructions: mealsInstructions);
+            mealsInstructions: mealsInstructions,
+            mealsFavourite: mealsFavourite);
 
   factory MealsDataModel.fromJson(Map<String, dynamic> json) {
     return MealsDataModel(
-        mealsId: json['idMeal'],
-        mealsName: json['strMeal'],
-        mealsPictURL: json['strMealThumb'],
-        mealsTags: json['strTags'] ?? "",
-        mealsInstructions: json['strInstructions'] ?? "");
+      mealsId: json['idMeal'],
+      mealsName: json['strMeal'],
+      mealsPictURL: json['strMealThumb'],
+      mealsTags: json['strTags'] ?? "",
+      mealsInstructions: json['strInstructions'] ?? "",
+      mealsFavourite: 0,
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -30,7 +34,8 @@ class MealsDataModel extends MealsData {
       'strMeals': mealsName,
       'strMealThumb': mealsPictURL,
       'strTags': mealsTags,
-      'strInstructions': mealsInstructions
+      'strInstructions': mealsInstructions,
+      'idFavorites': mealsFavourite
     };
   }
 }

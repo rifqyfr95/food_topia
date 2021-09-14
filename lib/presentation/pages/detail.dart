@@ -1,49 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_topia/domain/entities/meals_data.dart';
 import 'package:food_topia/injection_container.dart' as di;
 import 'package:food_topia/presentation/bloc/meals_data_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:food_topia/app_module.dart';
 import 'package:food_topia/presentation/widget/loading_widget.dart';
-import 'package:food_topia/presentation/widget/meals_list_view.dart';
+import 'package:food_topia/presentation/widget/meals_view.dart';
 import 'package:food_topia/presentation/widget/message_display.dart';
 
-void main() async {
-  await di.init();
-  runApp(ModularApp(module: AppModule(), child: MyApp()));
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: "/",
-      title: 'Foodtopia',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: FoodListPage(title: 'Foodtopia'),
-    ).modular();
-  }
-}
-
-class FoodListPage extends StatefulWidget {
-  FoodListPage({Key? key, required this.title}) : super(key: key);
-  final String title;
+class FoodDetailPage extends StatefulWidget {
+  FoodDetailPage(this.data);
+  MealsData data;
 
   @override
-  _FoodListPageState createState() => _FoodListPageState();
+  _FoodDetailPageState createState() => _FoodDetailPageState();
 }
 
-class _FoodListPageState extends State<FoodListPage> {
+class _FoodDetailPageState extends State<FoodDetailPage> {
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("Foodtopia"),
         elevation: 0,
+        leading: InkWell(
+          child: IconButton(
+            onPressed: () {
+              Modular.to.navigate("/",arguments: "Foodtopia");
+            },
+            icon: Icon(Icons.arrow_back),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(10.0),
@@ -58,23 +47,20 @@ class _FoodListPageState extends State<FoodListPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(
-            'List of meal',
-          ),
           BlocBuilder<MealsDataBloc, MealsDataState>(
             builder: (context, state) {
               if (state is Empty) {
-                dispatchListMeals(context);
+                dispatchGetMealsDetails(context);
                 return Container(
                   height: MediaQuery.of(context).size.height / 3,
                   child: Center(
-                    child: Text('Start loading!'),
+                    child: Text('Loading food detail!'),
                   ),
                 );
               } else if (state is Loading) {
                 return LoadingWidget();
-              } else if (state is ListLoaded) {
-                return MealsListView(state.meals);
+              } else if (state is Loaded) {
+                return MealsView(state.meals);
               } else if (state is Error) {
                 return MessageDisplay(
                   message: state.message,
@@ -89,8 +75,9 @@ class _FoodListPageState extends State<FoodListPage> {
     );
   }
 
-  void dispatchListMeals(BuildContext context) {
-    BlocProvider.of<MealsDataBloc>(context).add(GetMealsForData());
+  void dispatchGetMealsDetails(BuildContext context) {
+    print("id : ${widget.data.mealsId}");
+    BlocProvider.of<MealsDataBloc>(context).add(GetMealsDataForById(widget.data.mealsId));
   }
 
   @override
@@ -98,8 +85,6 @@ class _FoodListPageState extends State<FoodListPage> {
     super.initState();
   }
 }
-
-
 
 
 

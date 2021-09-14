@@ -6,6 +6,7 @@ class MealsData extends Equatable {
    String mealsPictURL = "";
    String mealsTags = "";
    String mealsInstructions = "";
+   int mealsFavourite = 0;
 
   MealsData({
     required this.mealsId,
@@ -13,6 +14,7 @@ class MealsData extends Equatable {
     required this.mealsPictURL,
     required this.mealsTags,
     required this.mealsInstructions,
+    required int mealsFavourite,
   });
 
   @override

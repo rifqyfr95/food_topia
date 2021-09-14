@@ -47,11 +47,13 @@ class FoodtopiaDatabase extends _$FoodtopiaDatabase {
 
   Future<List<Meal>> getAllMeals() => select(meals).get();
 
-  Future<List<Meal>> getMealsById(String id) =>
-      (select(meals)..where((tbl) => tbl.mealsId.equals(id))).get();
+  Future<List<Meal>> getMealsById(String id) {
+    return (select(meals)..where((tbl) => tbl.mealsId.equals(id))).get();
+  }
 
-  Future<List<Meal>> limitMeals(int limit, {int offset = 0}) {
-    return (select(meals)..limit(limit, offset: offset)).get();
+
+  Future<Meal> limitMeals(String id) {
+    return ((select(meals)..where((tbl) => tbl.mealsId.equals(id)))).getSingle();
   }
 
   Future updateMealsWithoutFavorites(Meal entry) {
@@ -96,4 +98,6 @@ abstract class MealsDataLocalDataSource {
 
   Future<List<MealsDataModel>> cacheListMealsDataWithoutFavorites(
       List<MealsDataModel> listMealsDataToCache);
+
+  Future<int> getFavById(String id);
 }

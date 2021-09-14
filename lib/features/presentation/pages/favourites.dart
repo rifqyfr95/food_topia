@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_topia/features/domain/entities/meals_data.dart';
 import 'package:food_topia/injection_container.dart' as di;
 import 'package:food_topia/features/presentation/bloc/meals_data_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -84,7 +85,13 @@ class _FoodFavouritesPageState extends State<FoodFavouritesPage> {
               } else if (state is Loading) {
                 return LoadingWidget();
               } else if (state is ListLoaded) {
-                return MealListView(state.meals, 2);
+                List<MealsData> data = [];
+                state.meals.forEach((element) {
+                  if(element.mealsFavourite == 1){
+                    data.add(element);
+                  }
+                });
+                return MealListView(data, 2);
               } else if (state is Error) {
                 return MessageDisplay(
                   message: state.message,

@@ -81,7 +81,9 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
               } else if (state is Loading) {
                 return LoadingWidget();
               } else if (state is Loaded) {
-                return MealsView(state.meals);
+
+                print("tes 2 ${state.meals.mealsFavourite} ${state.meals.mealsId} ${state.meals.mealsName}");
+                return MealsView(state.meals.mealsId,state.meals.mealsName,state.meals.mealsPictURL,state.meals.mealsTags,state.meals.mealsInstructions,state.meals.mealsFavourite);
               } else if (state is Error) {
                 return MessageDisplay(
                   message: state.message,

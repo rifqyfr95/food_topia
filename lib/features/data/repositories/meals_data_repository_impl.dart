@@ -22,15 +22,18 @@ class MealsDataRepositoryImpl implements MealsDataRepository {
   Future<Either<Failure, MealsData>> getMealsDataById(String mealsId) async {
     if (await networkInfo.isConnected) {
       try {
+        print("kesini inet");
         final remoteMealsData =
             await remoteDataSource.getMealsDataById(mealsId);
-        localDataSource.updateMealsDataWithoutFavourite(remoteMealsData);
-        final localDataMeals = await localDataSource.getMealsDataById(mealsId);
-        return Right(localDataMeals);
+        var test1 = await localDataSource.updateMealsDataWithoutFavourite(remoteMealsData);
+        // var test2 = await localDataSource.getFavById(mealsId);
+        // test1.mealsFavourite = test2;
+        return Right(test1);
       } on ServerException {
         return Left(ServerFailure());
       }
     } else {
+      print("kesini lokal");
       final localMealsData = await localDataSource.getMealsDataById(mealsId);
       return Right(localMealsData);
     }
@@ -103,6 +106,8 @@ class MealsDataRepositoryImpl implements MealsDataRepository {
       return Left(CacheFailure());
     }
   }
+
+
 
 
 }

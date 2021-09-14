@@ -94,7 +94,7 @@ class _FoodListPageState extends State<FoodListPage> {
           BlocBuilder<MealsDataBloc, MealsDataState>(
             builder: (context, state) {
               if (state is Empty) {
-                dispatchListMeals(context);
+                dispatchListMealsWithoutFavourites(context);
                 return Container(
                   height: MediaQuery.of(context).size.height / 3,
                   child: Center(
@@ -107,6 +107,7 @@ class _FoodListPageState extends State<FoodListPage> {
                 if(!sharedPreferences.containsKey("DATA_FIRST_LOADED")){
                   sharedPreferences.setInt("DATA_FIRST_LOADED", 1);
                 }
+                print("tes 1 ${state.meals[0].mealsFavourite} ");
                 return MealListView(state.meals,1);
               } else if (state is Error) {
                 return MessageDisplay(

@@ -112,4 +112,12 @@ class MealsDataLocalDataSourceImpl implements MealsDataLocalDataSource {
     await db.updateMealsWithoutFavorites(meals);
         return mealsDataToCache;
   }
+
+  @override
+  Future<int> getFavById(String id) async {
+    int test = 0;
+    Meal meals = await db.limitMeals(id);
+    test = meals.mealsFavourite;
+    return test;
+  }
 }

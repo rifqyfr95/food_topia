@@ -19,15 +19,6 @@ class _MealsListViewState extends State<MealListView> {
 
   @override
   Widget build(BuildContext context) {
-    List<MealsData> data = [];
-    data.forEach((element) {
-      if(element.mealsFavourite == 1){
-        data.add(element);
-      }
-    });
-    if(widget.type==1){
-     data.addAll(widget.mealsData);
-    }
     return ListView.builder(
       itemBuilder: (context, index) {
         return Container(
@@ -38,14 +29,14 @@ class _MealsListViewState extends State<MealListView> {
               color: Colors.blueAccent),
           child: ListTile(
               title: Text(
-                data[index].mealsName,
+                widget.mealsData[index].mealsName,
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w800,
                     fontSize: 20.0),
               ),
               subtitle: Text(
-                data[index].mealsTags,
+                widget.mealsData[index].mealsTags,
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
@@ -54,12 +45,12 @@ class _MealsListViewState extends State<MealListView> {
               leading: ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
                 child: Image.network(
-                  data[index].mealsPictURL,
+                  widget.mealsData[index].mealsPictURL,
                 ),
               ),
               onTap: () {
                 if (widget.type == 1) {
-                  Modular.to.navigate('/detail', arguments: data[index]);
+                  Modular.to.navigate('/detail', arguments: widget.mealsData[index]);
                 }
               },
               trailing: widget.type == 1 ? Container(height: 10, width: 10,):SizedBox(
@@ -68,7 +59,7 @@ class _MealsListViewState extends State<MealListView> {
                 child: InkWell(
                   onTap: () {
                     if(mounted){
-                      dispatchChangeFavourites(data,index);
+                      dispatchChangeFavourites(index);
                       Future.delayed(Duration(milliseconds: 700)).then((value) {
                         setState(() {
 
@@ -78,7 +69,7 @@ class _MealsListViewState extends State<MealListView> {
                   },
                   child: Icon(
                     Icons.star,
-                    color: data[index].mealsFavourite == 1
+                    color: widget.mealsData[index].mealsFavourite == 1
                         ? Colors.orange
                         : Colors.grey,
                     size: 16.0,
@@ -87,18 +78,18 @@ class _MealsListViewState extends State<MealListView> {
               )),
         );
       },
-      itemCount: data.length,
+      itemCount: widget.mealsData.length,
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
     );
   }
-  void dispatchChangeFavourites(List<MealsData> data, int index) {
-    if (data[index].mealsFavourite == 0){
-      data[index].mealsFavourite = 1;
+  void dispatchChangeFavourites(int index) {
+    if (widget.mealsData[index].mealsFavourite == 0){
+      widget.mealsData[index].mealsFavourite = 1;
     }else{
-      data[index].mealsFavourite = 0;
+      widget.mealsData[index].mealsFavourite = 0;
     }
     BlocProvider.of<MealsDataBloc>(context)
-        .add(UpdateMealsDataForById(data[index].mealsId, data[index].mealsFavourite));
+        .add(UpdateMealsDataForById(widget.mealsData[index].mealsId, widget.mealsData[index].mealsFavourite));
   }
 }

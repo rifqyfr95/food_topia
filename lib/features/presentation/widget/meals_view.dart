@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_topia/features/domain/entities/meals_data.dart';
 import 'package:food_topia/features/presentation/bloc/meals_data_bloc.dart';
 
 class MealsView extends StatefulWidget {
-  MealsView(this.mealsData);
+  MealsView(this.mealsId, this.mealsName, this.mealsPictURL, this.mealsTags, this.mealsDesc, this.mealsFavourite);
 
-  MealsData mealsData;
+  String mealsId;
+  String mealsName;
+  String mealsPictURL;
+  String mealsTags;
+  String mealsDesc;
+  int mealsFavourite;
 
   @override
   _MealsViewState createState() => _MealsViewState();
@@ -15,6 +19,7 @@ class MealsView extends StatefulWidget {
 class _MealsViewState extends State<MealsView> {
   @override
   Widget build(BuildContext context) {
+
     return Padding(
       padding: EdgeInsets.all(10.0),
       child: Column(
@@ -24,7 +29,7 @@ class _MealsViewState extends State<MealsView> {
           ClipRRect(
             borderRadius: BorderRadius.circular(15.0),
             child: Image.network(
-              widget.mealsData.mealsPictURL,
+              widget.mealsPictURL,
             ),
           ),
           SizedBox(
@@ -43,7 +48,7 @@ class _MealsViewState extends State<MealsView> {
                     borderRadius: BorderRadius.all(Radius.circular(8.0)),
                     color: Colors.orangeAccent),
                 child: Text(
-                  widget.mealsData.mealsName,
+                  widget.mealsName,
                   style: TextStyle(
                       color: Colors.black87,
                       fontSize: 30.0,
@@ -60,21 +65,21 @@ class _MealsViewState extends State<MealsView> {
                     });
                   });
                 }
-              }, icon: Icon(Icons.star,color: widget.mealsData.mealsFavourite == 1 ? Colors.orange:Colors.grey,)),
+              }, icon: Icon(Icons.star,color: widget.mealsFavourite == 1 ? Colors.orange:Colors.grey,)),
             ],
           ),
           SizedBox(
             height: 5.0,
           ),
           Visibility(
-              visible: widget.mealsData.mealsTags.isNotEmpty,
+              visible: widget.mealsTags.isNotEmpty,
               child: Container(
                 padding: EdgeInsets.all(5.0),
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.black54),
                     borderRadius: BorderRadius.all(Radius.circular(8.0)),
                     color: Colors.yellow),
-                child: Text(widget.mealsData.mealsTags,
+                child: Text(widget.mealsTags,
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 15.0,
@@ -96,7 +101,7 @@ class _MealsViewState extends State<MealsView> {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(8.0)),
                 color: Colors.white),
-            child: Text(widget.mealsData.mealsInstructions,
+            child: Text(widget.mealsDesc,
                 style: TextStyle(color: Color(0xAA000000), fontSize: 18.0)),
           ),
         ],
@@ -104,12 +109,12 @@ class _MealsViewState extends State<MealsView> {
     );
   }
   void dispatchChangeFavourites() {
-    if (widget.mealsData.mealsFavourite == 0){
-      widget.mealsData.mealsFavourite = 1;
+    if (widget.mealsFavourite == 0){
+      widget.mealsFavourite = 1;
     }else{
-      widget.mealsData.mealsFavourite = 0;
+      widget.mealsFavourite = 0;
     }
     BlocProvider.of<MealsDataBloc>(context)
-        .add(UpdateMealsDataForById(widget.mealsData.mealsId, widget.mealsData.mealsFavourite));
+        .add(UpdateMealsDataForById(widget.mealsId, widget.mealsFavourite));
   }
 }

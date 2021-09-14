@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:food_topia/core/error/failures.dart';
-import 'package:food_topia/domain/entities/meals_data.dart';
+import 'package:food_topia/features/domain/entities/meals_data.dart';
 
 
 abstract class MealsDataRepository {

@@ -2,9 +2,9 @@ import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dartz/dartz.dart';
-import 'package:food_topia/domain/repositories/meals_data_repository.dart';
-import 'package:food_topia/domain/usecases/get_meals_data_by_id.dart';
-import 'package:food_topia/domain/entities/meals_data.dart';
+import 'package:food_topia/features/domain/repositories/meals_data_repository.dart';
+import 'package:food_topia/features/domain/usecases/get_meals_data_by_id.dart';
+import 'package:food_topia/features/domain/entities/meals_data.dart';
 import 'get_meals_data_test.mocks.dart';
 
 

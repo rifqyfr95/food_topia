@@ -8,7 +8,7 @@ class LoadingWidget extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).size.height / 3,
       child: Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(color: Colors.black,),
       ),
     );
   }

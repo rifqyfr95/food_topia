@@ -1,5 +1,5 @@
-import 'package:food_topia/data/datasources/meals_data_local_data_source.dart';
-import 'package:food_topia/data/models/meals_data_model.dart';
+import 'package:food_topia/features/data/datasources/meals_data_local_data_source.dart';
+import 'package:food_topia/features/data/models/meals_data_model.dart';
 import 'package:food_topia/injection_container.dart' as di;
 
 class MealsDataLocalDataSourceImpl implements MealsDataLocalDataSource {

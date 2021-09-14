@@ -1,4 +1,4 @@
-import 'package:food_topia/data/models/meals_data_model.dart';
+import 'package:food_topia/features/data/models/meals_data_model.dart';
 import 'package:moor/moor.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor_flutter/moor_flutter.dart';

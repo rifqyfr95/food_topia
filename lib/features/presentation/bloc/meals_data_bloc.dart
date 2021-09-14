@@ -5,12 +5,13 @@ import 'package:equatable/equatable.dart';
 import 'package:food_topia/core/error/failures.dart';
 import 'package:food_topia/core/platform/network_info.dart';
 import 'package:food_topia/core/util/string_checker.dart';
-import 'package:food_topia/domain/entities/meals_data.dart';
-import 'package:food_topia/domain/usecases/update_meals_data_by_id_without_favourites.dart';
-import 'package:food_topia/domain/usecases/get_meals_data.dart';
-import 'package:food_topia/domain/usecases/get_meals_data_by_id.dart';
-import 'package:food_topia/domain/usecases/update_meals_data.dart';
-import 'package:food_topia/domain/usecases/update_meals_data_without_favourites.dart';
+import 'package:food_topia/features/domain/entities/meals_data.dart';
+import 'package:food_topia/features/domain/usecases/update_meals_data_by_id_without_favourites.dart';
+import 'package:food_topia/features/domain/usecases/get_meals_data.dart';
+import 'package:food_topia/features/domain/usecases/get_meals_data_by_id.dart';
+import 'package:food_topia/features/domain/usecases/update_meals_data.dart';
+import 'package:food_topia/features/domain/usecases/update_meals_data_without_favourites.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'meals_data_event.dart';
 
@@ -68,6 +69,8 @@ class MealsDataBloc extends Bloc<MealsDataEvent, MealsDataState> {
         });
       });
     }else if (event is GetMealsForData) {
+      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+      sharedPreferences.setInt("DATA_FIRST_LOADED", 1);
       final mealsId = await networkInfo.connectionCheck();
       yield* mealsId.fold((failure) async* {
         yield Error(message: INVALID_INPUT_FAILURE_MESSAGE);

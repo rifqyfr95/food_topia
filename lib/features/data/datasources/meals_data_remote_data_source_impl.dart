@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:food_topia/data/datasources/meals_data_remote_data_source.dart';
-import 'package:food_topia/data/models/meals_data_model.dart';
+import 'package:food_topia/features/data/datasources/meals_data_remote_data_source.dart';
+import 'package:food_topia/features/data/models/meals_data_model.dart';
 
 class MealsDataRemoteDataSourceImpl implements MealsDataRemoteDataSource{
   var dio = Dio();

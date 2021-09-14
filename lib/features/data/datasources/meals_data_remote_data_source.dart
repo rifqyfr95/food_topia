@@ -1,4 +1,4 @@
-import 'package:food_topia/data/models/meals_data_model.dart';
+import 'package:food_topia/features/data/models/meals_data_model.dart';
 
 abstract class MealsDataRemoteDataSource {
   Future<MealsDataModel> getMealsDataById(String id);

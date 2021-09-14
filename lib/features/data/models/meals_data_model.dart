@@ -1,4 +1,4 @@
-import 'package:food_topia/domain/entities/meals_data.dart';
+import 'package:food_topia/features/domain/entities/meals_data.dart';
 import 'package:meta/meta.dart';
 
 class MealsDataModel extends MealsData {

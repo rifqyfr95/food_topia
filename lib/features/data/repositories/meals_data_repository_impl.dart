@@ -1,11 +1,11 @@
 import 'package:dartz/dartz.dart';
 import 'package:food_topia/core/error/exception.dart';
 import 'package:food_topia/core/error/failures.dart';
-import 'package:food_topia/domain/entities/meals_data.dart';
-import 'package:food_topia/domain/repositories/meals_data_repository.dart';
+import 'package:food_topia/features/domain/entities/meals_data.dart';
+import 'package:food_topia/features/domain/repositories/meals_data_repository.dart';
 import 'package:food_topia/core/platform/network_info.dart';
-import 'package:food_topia/data/datasources/meals_data_remote_data_source.dart';
-import 'package:food_topia/data/datasources/meals_data_local_data_source.dart';
+import 'package:food_topia/features/data/datasources/meals_data_remote_data_source.dart';
+import 'package:food_topia/features/data/datasources/meals_data_local_data_source.dart';
 
 class MealsDataRepositoryImpl implements MealsDataRepository {
   final MealsDataRemoteDataSource remoteDataSource;

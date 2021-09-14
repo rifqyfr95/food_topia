@@ -1,19 +1,19 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:food_topia/core/platform/network_info.dart';
 import 'package:food_topia/core/util/string_checker.dart';
-import 'package:food_topia/data/datasources/meals_data_local_data_source.dart';
-import 'package:food_topia/data/datasources/meals_data_remote_data_source.dart';
-import 'package:food_topia/data/datasources/meals_data_remote_data_source_impl.dart';
-import 'package:food_topia/data/datasources/meals_data_local_data_source_impl.dart';
-import 'package:food_topia/data/repositories/meals_data_repository_impl.dart';
-import 'package:food_topia/domain/repositories/meals_data_repository.dart';
-import 'package:food_topia/domain/usecases/get_meals_data.dart';
-import 'package:food_topia/domain/usecases/get_meals_data_by_id.dart';
-import 'package:food_topia/domain/usecases/update_meals_data.dart';
-import 'package:food_topia/domain/usecases/update_meals_data_by_id_without_favourites.dart';
-import 'package:food_topia/domain/usecases/update_meals_data_without_favourites.dart';
+import 'package:food_topia/features/data/datasources/meals_data_local_data_source.dart';
+import 'package:food_topia/features/data/datasources/meals_data_remote_data_source.dart';
+import 'package:food_topia/features/data/datasources/meals_data_remote_data_source_impl.dart';
+import 'package:food_topia/features/data/datasources/meals_data_local_data_source_impl.dart';
+import 'package:food_topia/features/data/repositories/meals_data_repository_impl.dart';
+import 'package:food_topia/features/domain/repositories/meals_data_repository.dart';
+import 'package:food_topia/features/domain/usecases/get_meals_data.dart';
+import 'package:food_topia/features/domain/usecases/get_meals_data_by_id.dart';
+import 'package:food_topia/features/domain/usecases/update_meals_data.dart';
+import 'package:food_topia/features/domain/usecases/update_meals_data_by_id_without_favourites.dart';
+import 'package:food_topia/features/domain/usecases/update_meals_data_without_favourites.dart';
 import 'package:get_it/get_it.dart';
-import 'presentation/bloc/meals_data_bloc.dart';
+import 'package:food_topia/features/presentation/bloc/meals_data_bloc.dart';
 import 'package:dio/dio.dart';
 
 

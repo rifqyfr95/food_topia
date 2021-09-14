@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_topia/domain/entities/meals_data.dart';
-import 'package:food_topia/presentation/bloc/meals_data_bloc.dart';
+import 'package:food_topia/features/domain/entities/meals_data.dart';
+import 'package:food_topia/features/presentation/bloc/meals_data_bloc.dart';
 
 class MealsView extends StatefulWidget {
   MealsView(this.mealsData);
@@ -52,13 +52,15 @@ class _MealsViewState extends State<MealsView> {
                 ),
               ),
               IconButton(onPressed: () {
-                dispatchChangeFavourites();
-                Future.delayed(Duration(milliseconds: 700)).then((value) {
-                  setState(() {
+                if(mounted){
+                  dispatchChangeFavourites();
+                  Future.delayed(Duration(milliseconds: 700)).then((value) {
+                    setState(() {
 
+                    });
                   });
-                });
-              }, icon: Icon(Icons.thumb_up,color: widget.mealsData.mealsFavourite == 1 ? Colors.orange:Colors.grey,)),
+                }
+              }, icon: Icon(Icons.star,color: widget.mealsData.mealsFavourite == 1 ? Colors.orange:Colors.grey,)),
             ],
           ),
           SizedBox(

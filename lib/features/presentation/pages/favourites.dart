@@ -1,44 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_topia/injection_container.dart' as di;
-import 'package:food_topia/presentation/bloc/meals_data_bloc.dart';
+import 'package:food_topia/features/presentation/bloc/meals_data_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:food_topia/app_module.dart';
-import 'package:food_topia/presentation/widget/loading_widget.dart';
-import 'package:food_topia/presentation/widget/meals_list_view.dart';
-import 'package:food_topia/presentation/widget/message_display.dart';
+import 'package:food_topia/features/presentation/widget/loading_widget.dart';
+import 'package:food_topia/features/presentation/widget/meals_list_view.dart';
+import 'package:food_topia/features/presentation/widget/message_display.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() async {
-  await di.init();
-  runApp(ModularApp(module: AppModule(), child: MyApp()));
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: "/",
-      title: 'Foodtopia',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: FoodListPage(title: 'Foodtopia'),
-    ).modular();
-  }
-}
-
-class FoodListPage extends StatefulWidget {
-  FoodListPage({Key? key, required this.title}) : super(key: key);
+class FoodFavouritesPage extends StatefulWidget {
+  FoodFavouritesPage({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
-  _FoodListPageState createState() => _FoodListPageState();
+  _FoodFavouritesPageState createState() => _FoodFavouritesPageState();
 }
 
-class _FoodListPageState extends State<FoodListPage> {
-
+class _FoodFavouritesPageState extends State<FoodFavouritesPage> {
   late SharedPreferences sharedPreferences;
 
   @override
@@ -47,7 +26,14 @@ class _FoodListPageState extends State<FoodListPage> {
       appBar: AppBar(
         title: Text(widget.title),
         elevation: 0,
-
+        leading: InkWell(
+          child: IconButton(
+            onPressed: () {
+              Modular.to.navigate("/", arguments: "Foodtopia");
+            },
+            icon: Icon(Icons.arrow_back),
+          ),
+        ),
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -88,11 +74,7 @@ class _FoodListPageState extends State<FoodListPage> {
           BlocBuilder<MealsDataBloc, MealsDataState>(
             builder: (context, state) {
               if (state is Empty) {
-                if(!sharedPreferences.containsKey("DATA_FIRST_LOADED")){
-                  dispatchListMeals(context);
-                }else{
-                  dispatchListMealsWithoutFavourites(context);
-                }
+                dispatchListMealsWithoutFavourites(context);
                 return Container(
                   height: MediaQuery.of(context).size.height / 3,
                   child: Center(
@@ -102,10 +84,7 @@ class _FoodListPageState extends State<FoodListPage> {
               } else if (state is Loading) {
                 return LoadingWidget();
               } else if (state is ListLoaded) {
-                if(!sharedPreferences.containsKey("DATA_FIRST_LOADED")){
-                  sharedPreferences.setInt("DATA_FIRST_LOADED", 1);
-                }
-                return MealsListView(state.meals);
+                return MealListView(state.meals, 2);
               } else if (state is Error) {
                 return MessageDisplay(
                   message: state.message,
@@ -123,8 +102,10 @@ class _FoodListPageState extends State<FoodListPage> {
   void dispatchListMeals(BuildContext context) {
     BlocProvider.of<MealsDataBloc>(context).add(GetMealsForData());
   }
+
   void dispatchListMealsWithoutFavourites(BuildContext context) {
-    BlocProvider.of<MealsDataBloc>(context).add(UpdateMealsDataForWithoutFavourites());
+    BlocProvider.of<MealsDataBloc>(context)
+        .add(UpdateMealsDataForWithoutFavourites());
   }
 
   loadSharedPref() async {
@@ -137,8 +118,3 @@ class _FoodListPageState extends State<FoodListPage> {
     super.initState();
   }
 }
-
-
-
-
-

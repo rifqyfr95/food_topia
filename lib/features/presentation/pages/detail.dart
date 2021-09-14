@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_topia/domain/entities/meals_data.dart';
+import 'package:food_topia/features/domain/entities/meals_data.dart';
 import 'package:food_topia/injection_container.dart' as di;
-import 'package:food_topia/presentation/bloc/meals_data_bloc.dart';
+import 'package:food_topia/features/presentation/bloc/meals_data_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:food_topia/presentation/widget/loading_widget.dart';
-import 'package:food_topia/presentation/widget/meals_view.dart';
-import 'package:food_topia/presentation/widget/message_display.dart';
+import 'package:food_topia/features/presentation/widget/loading_widget.dart';
+import 'package:food_topia/features/presentation/widget/meals_view.dart';
+import 'package:food_topia/features/presentation/widget/message_display.dart';
 
 class FoodDetailPage extends StatefulWidget {
   FoodDetailPage(this.data);
@@ -22,7 +22,7 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Foodtopia"),
+          title: Text("Food Detail"),
           flexibleSpace: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(

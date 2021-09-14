@@ -30,6 +30,24 @@ class Loaded extends MealsDataState {
   List<Object?> get props => [meals];
 }
 
+class Updated extends MealsDataState {
+  final String meals;
+
+  Updated({required this.meals});
+  @override
+  // TODO: implement props
+  List<Object?> get props => [String];
+}
+
+class Saved extends MealsDataState {
+  final bool saved;
+
+  Saved({required this.saved});
+  @override
+  // TODO: implement props
+  List<Object?> get props => [saved];
+}
+
 class ListLoaded extends MealsDataState {
   final List<MealsData> meals;
 

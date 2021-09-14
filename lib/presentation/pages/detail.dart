@@ -10,6 +10,7 @@ import 'package:food_topia/presentation/widget/message_display.dart';
 
 class FoodDetailPage extends StatefulWidget {
   FoodDetailPage(this.data);
+
   MealsData data;
 
   @override
@@ -17,28 +18,48 @@ class FoodDetailPage extends StatefulWidget {
 }
 
 class _FoodDetailPageState extends State<FoodDetailPage> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Foodtopia"),
-        elevation: 0,
-        leading: InkWell(
-          child: IconButton(
-            onPressed: () {
-              Modular.to.navigate("/",arguments: "Foodtopia");
-            },
-            icon: Icon(Icons.arrow_back),
+        appBar: AppBar(
+          title: Text("Foodtopia"),
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [
+                    const Color(0xFF3366FF),
+                    const Color(0xFF00CCFF),
+                  ],
+                  begin: const FractionalOffset(0.0, 0.0),
+                  end: const FractionalOffset(1.0, 0.0),
+                  stops: [0.0, 1.0],
+                  tileMode: TileMode.clamp),
+            ),
+          ),
+          elevation: 0,
+          leading: InkWell(
+            child: IconButton(
+              onPressed: () {
+                Modular.to.navigate("/", arguments: "Foodtopia");
+              },
+              icon: Icon(Icons.arrow_back),
+            ),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(10.0),
-        child: buildBody(context),
-      ),
-    );
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [
+              const Color(0xFF3366FF),
+              const Color(0xFF00CCFF),
+            ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+          ),
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(10.0),
+            child: buildBody(context),
+          ),
+        ));
   }
 
   BlocProvider<MealsDataBloc> buildBody(BuildContext context) {
@@ -76,8 +97,8 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
   }
 
   void dispatchGetMealsDetails(BuildContext context) {
-    print("id : ${widget.data.mealsId}");
-    BlocProvider.of<MealsDataBloc>(context).add(GetMealsDataForById(widget.data.mealsId));
+    BlocProvider.of<MealsDataBloc>(context)
+        .add(GetMealsDataForById(widget.data.mealsId));
   }
 
   @override
@@ -85,6 +106,3 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
     super.initState();
   }
 }
-
-
-

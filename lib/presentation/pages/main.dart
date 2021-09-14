@@ -7,6 +7,7 @@ import 'package:food_topia/app_module.dart';
 import 'package:food_topia/presentation/widget/loading_widget.dart';
 import 'package:food_topia/presentation/widget/meals_list_view.dart';
 import 'package:food_topia/presentation/widget/message_display.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   await di.init();
@@ -38,16 +39,42 @@ class FoodListPage extends StatefulWidget {
 
 class _FoodListPageState extends State<FoodListPage> {
 
+  late SharedPreferences sharedPreferences;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
         elevation: 0,
+
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                colors: [
+                  const Color(0xFF3366FF),
+                  const Color(0xFF00CCFF),
+                ],
+                begin: const FractionalOffset(0.0, 0.0),
+                end: const FractionalOffset(1.0, 0.0),
+                stops: [0.0, 1.0],
+                tileMode: TileMode.clamp),
+          ),
+        ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(10.0),
-        child: buildBody(context),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [
+            const Color(0xFF3366FF),
+            const Color(0xFF00CCFF),
+          ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+        ),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(10.0),
+          child: buildBody(context),
+        ),
       ),
     );
   }
@@ -58,13 +85,14 @@ class _FoodListPageState extends State<FoodListPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(
-            'List of meal',
-          ),
           BlocBuilder<MealsDataBloc, MealsDataState>(
             builder: (context, state) {
               if (state is Empty) {
-                dispatchListMeals(context);
+                if(!sharedPreferences.containsKey("DATA_FIRST_LOADED")){
+                  dispatchListMeals(context);
+                }else{
+                  dispatchListMealsWithoutFavourites(context);
+                }
                 return Container(
                   height: MediaQuery.of(context).size.height / 3,
                   child: Center(
@@ -74,6 +102,9 @@ class _FoodListPageState extends State<FoodListPage> {
               } else if (state is Loading) {
                 return LoadingWidget();
               } else if (state is ListLoaded) {
+                if(!sharedPreferences.containsKey("DATA_FIRST_LOADED")){
+                  sharedPreferences.setInt("DATA_FIRST_LOADED", 1);
+                }
                 return MealsListView(state.meals);
               } else if (state is Error) {
                 return MessageDisplay(
@@ -92,9 +123,17 @@ class _FoodListPageState extends State<FoodListPage> {
   void dispatchListMeals(BuildContext context) {
     BlocProvider.of<MealsDataBloc>(context).add(GetMealsForData());
   }
+  void dispatchListMealsWithoutFavourites(BuildContext context) {
+    BlocProvider.of<MealsDataBloc>(context).add(UpdateMealsDataForWithoutFavourites());
+  }
+
+  loadSharedPref() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+  }
 
   @override
   void initState() {
+    loadSharedPref();
     super.initState();
   }
 }

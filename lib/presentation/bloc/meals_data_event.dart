@@ -16,3 +16,25 @@ class GetMealsForData extends MealsDataEvent {
 
 
 }
+
+class UpdateMealsDataForById extends MealsDataEvent {
+  final String mealsId;
+  final int favourites;
+
+  UpdateMealsDataForById(this.mealsId, this.favourites);
+
+}
+
+
+class UpdateMealsDataForWithoutFavourites extends MealsDataEvent {
+
+  UpdateMealsDataForWithoutFavourites();
+
+}
+
+class UpdateMealsDataForByIdWithoutFavourites extends MealsDataEvent {
+  final String mealsId;
+
+  UpdateMealsDataForByIdWithoutFavourites(this.mealsId);
+
+}

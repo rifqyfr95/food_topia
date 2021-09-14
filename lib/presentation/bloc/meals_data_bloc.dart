@@ -6,8 +6,11 @@ import 'package:food_topia/core/error/failures.dart';
 import 'package:food_topia/core/platform/network_info.dart';
 import 'package:food_topia/core/util/string_checker.dart';
 import 'package:food_topia/domain/entities/meals_data.dart';
+import 'package:food_topia/domain/usecases/update_meals_data_by_id_without_favourites.dart';
 import 'package:food_topia/domain/usecases/get_meals_data.dart';
 import 'package:food_topia/domain/usecases/get_meals_data_by_id.dart';
+import 'package:food_topia/domain/usecases/update_meals_data.dart';
+import 'package:food_topia/domain/usecases/update_meals_data_without_favourites.dart';
 
 part 'meals_data_event.dart';
 
@@ -16,6 +19,9 @@ part 'meals_data_state.dart';
 class MealsDataBloc extends Bloc<MealsDataEvent, MealsDataState> {
   final GetMealsDataById getMealsDataById;
   final GetMealsData getMealsData;
+  final UpdateMealsData updateMealsData;
+  final UpdateMealsDataWithoutFavourites updateMealsDataWithoutFavourites;
+  final UpdateMealsDataByIdWithoutFavourites updateMealsDataByIdWithoutFavourites;
   final InputConverter inputConverter;
   final NetworkInfoImpl networkInfo;
   static const String SERVER_FAILURE_MESSAGE = 'Server Failure';
@@ -26,10 +32,16 @@ class MealsDataBloc extends Bloc<MealsDataEvent, MealsDataState> {
   MealsDataBloc(
       this.getMealsDataById,
       this.getMealsData,
+      this.updateMealsData,
+      this.updateMealsDataWithoutFavourites,
+      this.updateMealsDataByIdWithoutFavourites,
       this.inputConverter,
       this.networkInfo)
       : assert(getMealsDataById != null),
         assert(getMealsData != null),
+        assert(updateMealsData != null),
+        assert(updateMealsDataWithoutFavourites != null),
+        assert(updateMealsDataByIdWithoutFavourites != null),
         assert(networkInfo != null),
         assert(inputConverter != null),
         super(Empty());
@@ -68,6 +80,53 @@ class MealsDataBloc extends Bloc<MealsDataEvent, MealsDataState> {
           );
         }, (r) async* {
           yield ListLoaded(meals: r);
+        });
+      });
+    }else if (event is UpdateMealsDataForWithoutFavourites) {
+      final mealsId = await networkInfo.connectionCheck();
+      yield* mealsId.fold((failure) async* {
+        yield Error(message: INVALID_INPUT_FAILURE_MESSAGE);
+      }, (meals) async* {
+        yield Loading();
+        final failureOrMeals = await updateMealsDataWithoutFavourites(ParamsFullMealsDataWithoutFavourites());
+        yield* failureOrMeals.fold((failure) async* {
+          yield Error(
+            message: _mapFailureToMessage(failure),
+          );
+        }, (r) async* {
+          yield ListLoaded(meals: r);
+        });
+      });
+    }else if (event is UpdateMealsDataForById) {
+      final mealsId = inputConverter.stringChecker(event.mealsId);
+      yield* mealsId.fold((failure) async* {
+        yield Error(message: INVALID_INPUT_FAILURE_MESSAGE);
+      }, (meals) async* {
+        // yield Loading();
+        final failureOrMeals = await updateMealsData(ParamsUpdateMealsData(meals, event.favourites));
+        print("is fav ${event.favourites}");
+        yield* failureOrMeals.fold((failure) async* {
+          yield Error(
+            message: _mapFailureToMessage(failure),
+          );
+        }, (r) async* {
+          yield Loaded(meals: r);
+        });
+      });
+    }else if (event is UpdateMealsDataForByIdWithoutFavourites) {
+      final mealsId = inputConverter.stringChecker(event.mealsId);
+      yield* mealsId.fold((failure) async* {
+        yield Error(message: INVALID_INPUT_FAILURE_MESSAGE);
+      }, (meals) async* {
+        yield Loading();
+        final failureOrMeals = await updateMealsDataByIdWithoutFavourites(ParamsUpdateMealsDataWithoutFav(meals));
+
+        yield* failureOrMeals.fold((failure) async* {
+          yield Error(
+            message: _mapFailureToMessage(failure),
+          );
+        }, (r) async* {
+          yield Loaded(meals: r);
         });
       });
     }

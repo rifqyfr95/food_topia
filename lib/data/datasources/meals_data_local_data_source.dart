@@ -1,6 +1,7 @@
 import 'package:food_topia/data/models/meals_data_model.dart';
 import 'package:moor/moor.dart';
 import 'package:moor/ffi.dart';
+import 'package:moor_flutter/moor_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'dart:io';
@@ -14,13 +15,14 @@ class Meals extends Table {
 
   TextColumn get mealsPictURL => text().withLength(min: 1, max: 1000)();
 
-  TextColumn get mealsTags => text().withLength(min: 0, max: 100).withDefault(const Constant(""))();
+  TextColumn get mealsTags =>
+      text().withLength(min: 0, max: 100).withDefault(const Constant(""))();
 
-  TextColumn get mealsDesc => text().withLength(min: 0, max: 9999).withDefault(const Constant(""))();
+  TextColumn get mealsDesc =>
+      text().withLength(min: 0, max: 9999).withDefault(const Constant(""))();
 
   IntColumn get mealsFavourite => integer().withDefault(const Constant(0))();
 }
-
 
 LazyDatabase _openConnection() {
   // the LazyDatabase util lets us find the right location for the file async.
@@ -52,8 +54,23 @@ class FoodtopiaDatabase extends _$FoodtopiaDatabase {
     return (select(meals)..limit(limit, offset: offset)).get();
   }
 
+  Future updateMealsWithoutFavorites(Meal entry) {
+    return (update(meals)..where((tbl) => tbl.mealsId.equals(entry.mealsId)))
+        .write(MealsCompanion(
+            mealsId: Value(entry.mealsId),
+            mealsName: Value(entry.mealsName),
+            mealsPictURL: Value(entry.mealsPictURL),
+            mealsTags: Value(entry.mealsTags),
+            mealsDesc: Value(entry.mealsDesc)));
+  }
+
   Future updateMeals(Meal entry) {
-    return update(meals).replace(entry);
+    return (update(meals)..where((tbl) => tbl.mealsId.equals(entry.mealsId)))
+        .write(MealsCompanion(mealsFavourite: Value(entry.mealsFavourite)));
+  }
+
+  Future upsert(Meal entry){
+    return into(meals).insert(entry, mode: InsertMode.insertOrReplace);
   }
 
   Future deleteMeals(Meal entry) {
@@ -70,9 +87,13 @@ abstract class MealsDataLocalDataSource {
 
   Future<MealsDataModel> getMealsDataById(String id);
 
-  Future<void> cacheMealsData(MealsDataModel mealsDataToCache);
-
-  Future<void> cacheListMealsData(
+  Future<List<MealsDataModel>> cacheListMealsData(
       List<MealsDataModel> listMealsDataToCache);
 
+  Future<MealsDataModel> updateMealsData(MealsDataModel mealsDataToCache);
+
+  Future<MealsDataModel> updateMealsDataWithoutFavourite(MealsDataModel mealsDataToCache);
+
+  Future<List<MealsDataModel>> cacheListMealsDataWithoutFavorites(
+      List<MealsDataModel> listMealsDataToCache);
 }

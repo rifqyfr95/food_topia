@@ -49,18 +49,9 @@ class MealsDataLocalDataSourceImpl implements MealsDataLocalDataSource {
     return meals;
   }
 
-  Future<void> cacheMealsData(MealsDataModel mealsDataToCache) async {
-    Meal meals = Meal(
-        mealsId: mealsDataToCache.mealsId,
-        mealsName: mealsDataToCache.mealsName,
-        mealsPictURL: mealsDataToCache.mealsPictURL,
-        mealsTags: mealsDataToCache.mealsTags,
-        mealsDesc: mealsDataToCache.mealsInstructions,
-        mealsFavourite: mealsDataToCache.mealsFavourite);
-    return await db.addMeals(meals);
-  }
 
-  Future<void> cacheListMealsData(
+
+  Future<List<MealsDataModel>> cacheListMealsData(
       List<MealsDataModel> listMealsDataToCache) async {
     listMealsDataToCache.forEach((element) async {
       Meal meals = Meal(
@@ -73,6 +64,52 @@ class MealsDataLocalDataSourceImpl implements MealsDataLocalDataSource {
       await db.addMeals(meals);
     });
 
-    return null;
+    return listMealsDataToCache;
+  }
+
+  @override
+  Future<MealsDataModel> updateMealsData(MealsDataModel mealsDataToCache) async {
+    Meal meals = Meal(
+        mealsId: mealsDataToCache.mealsId,
+        mealsName: mealsDataToCache.mealsName,
+        mealsPictURL: mealsDataToCache.mealsPictURL,
+        mealsTags: mealsDataToCache.mealsTags,
+        mealsDesc: mealsDataToCache.mealsInstructions,
+        mealsFavourite: mealsDataToCache.mealsFavourite);
+    await db.updateMeals(meals);
+    return mealsDataToCache;
+  }
+
+
+
+  Future<List<MealsDataModel>> cacheListMealsDataWithoutFavorites(
+      List<MealsDataModel> listMealsDataToCache) async {
+    listMealsDataToCache.forEach((element) async {
+      Meal meals = Meal(
+          mealsId: element.mealsId,
+          mealsName: element.mealsName,
+          mealsPictURL: element.mealsPictURL,
+          mealsTags: element.mealsTags,
+          mealsDesc: element.mealsInstructions,
+          mealsFavourite: 0);
+      await db.updateMealsWithoutFavorites(meals);
+    });
+
+    return listMealsDataToCache;
+  }
+
+
+
+  @override
+  Future<MealsDataModel> updateMealsDataWithoutFavourite(MealsDataModel mealsDataToCache) async {
+    Meal meals = Meal(
+        mealsId: mealsDataToCache.mealsId,
+        mealsName: mealsDataToCache.mealsName,
+        mealsPictURL: mealsDataToCache.mealsPictURL,
+        mealsTags: mealsDataToCache.mealsTags,
+        mealsDesc: mealsDataToCache.mealsInstructions,
+        mealsFavourite: 0);
+    await db.updateMealsWithoutFavorites(meals);
+        return mealsDataToCache;
   }
 }

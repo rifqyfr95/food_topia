@@ -24,8 +24,9 @@ class MealsDataRepositoryImpl implements MealsDataRepository {
       try {
         final remoteMealsData =
             await remoteDataSource.getMealsDataById(mealsId);
-        localDataSource.cacheMealsData(remoteMealsData);
-        return Right(remoteMealsData);
+        localDataSource.updateMealsDataWithoutFavourite(remoteMealsData);
+        final localDataMeals = await localDataSource.getMealsDataById(mealsId);
+        return Right(localDataMeals);
       } on ServerException {
         return Left(ServerFailure());
       }
@@ -55,5 +56,53 @@ class MealsDataRepositoryImpl implements MealsDataRepository {
 
     }
   }
+
+  @override
+  Future<Either<Failure, MealsData>> updateMeals(String mealsId, int favorites) async {
+    try{
+      final remoteMealsData = await remoteDataSource.getMealsDataById(mealsId);
+      remoteMealsData.mealsFavourite = favorites;
+      localDataSource.updateMealsData(remoteMealsData);
+      return Right(remoteMealsData);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
+
+
+
+  @override
+  Future<Either<Failure, List<MealsData>>> updateListDataWithoutFavorite() async {
+    if (await networkInfo.isConnected) {
+      try {
+        final remoteMealsData = await remoteDataSource.getListMealsData();
+        final localMealsData = await localDataSource.cacheListMealsDataWithoutFavorites(remoteMealsData);
+        return Right(localMealsData);
+      } on ServerException {
+        return Left(ServerFailure());
+      }
+
+    } else {
+      try{
+        final localMealsData = await localDataSource.getListMealsData();
+        return Right(localMealsData);
+      } on CacheException {
+        return Left(CacheFailure());
+      }
+
+    }
+  }
+
+  @override
+  Future<Either<Failure, MealsData>> updateMealsDataWithoutFavorite(String mealsId) async {
+    try{
+      final remoteMealsData = await remoteDataSource.getMealsDataById(mealsId);
+      localDataSource.updateMealsDataWithoutFavourite(remoteMealsData);
+      return Right(remoteMealsData);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
+
 
 }

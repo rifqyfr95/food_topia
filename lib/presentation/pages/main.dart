@@ -3,6 +3,7 @@ import 'package:food_topia/domain/entities/meals_data.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+import 'package:dio/dio.dart';
 void main() {
   runApp(MyApp());
 }
@@ -41,11 +42,11 @@ class _FoodListPageState extends State<FoodListPage> {
   Future<List<MealsData>> getData() async {
     List<MealsData> result = [];
     String base_url = "https://www.themealdb.com/api/json/v1/1/search.php?f=b";
-    var datas = await http.get(Uri.parse(base_url));
-    var dataBodies = json.decode(datas.body);
-    List<dynamic> meals = dataBodies['meals'];
+    var dio = Dio();
+    var response = await dio.get(base_url);
+    List<dynamic> meals = response.data['meals'];
     meals.forEach((element) {
-      MealsData mealsData = MealsData(mealsName: element['strMeal'], mealsPictURL: element['strMealThumb'], mealsTags: element['strTags'] ?? "", mealsInstructions: element['strInstructions']);
+      MealsData mealsData = MealsData(mealsId: element['idMeal'],mealsName: element['strMeal'], mealsPictURL: element['strMealThumb'], mealsTags: element['strTags'] ?? "", mealsInstructions: element['strInstructions']);
       result.add(mealsData);
       if (result.length == 20) {
         return;
@@ -79,7 +80,6 @@ class _FoodListPageState extends State<FoodListPage> {
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: snapShotData.data?.length,
                   itemBuilder: (context, index) {
-                    print(snapShotData.data);
                     return ListTile(
                       title: Text(snapShotData.data![index].mealsName),
                       subtitle: Text(snapShotData.data![index].mealsTags),

@@ -31,20 +31,19 @@ class MockMealsDataRepository extends _i1.Mock
   }
 
   @override
-  _i4.Future<_i2.Either<_i5.Failure, _i6.MealsData>> getMealsDataByName(
-          String? mealsName) =>
-      (super.noSuchMethod(Invocation.method(#getMealsDataByName, [mealsName]),
+  _i4.Future<_i2.Either<_i5.Failure, _i6.MealsData>> getMealsDataById(
+          String? mealsId) =>
+      (super.noSuchMethod(Invocation.method(#getMealsDataById, [mealsId]),
               returnValue: Future<_i2.Either<_i5.Failure, _i6.MealsData>>.value(
                   _FakeEither_0<_i5.Failure, _i6.MealsData>()))
           as _i4.Future<_i2.Either<_i5.Failure, _i6.MealsData>>);
   @override
-  _i4.Future<_i2.Either<_i5.Failure, _i6.MealsData>> getMealsDataByInitial(
-          String? mealsInitial) =>
-      (super.noSuchMethod(
-              Invocation.method(#getMealsDataByInitial, [mealsInitial]),
-              returnValue: Future<_i2.Either<_i5.Failure, _i6.MealsData>>.value(
-                  _FakeEither_0<_i5.Failure, _i6.MealsData>()))
-          as _i4.Future<_i2.Either<_i5.Failure, _i6.MealsData>>);
+  _i4.Future<_i2.Either<_i5.Failure, List<_i6.MealsData>>> getListMealsData() =>
+      (super.noSuchMethod(Invocation.method(#getListMealsData, []),
+              returnValue:
+                  Future<_i2.Either<_i5.Failure, List<_i6.MealsData>>>.value(
+                      _FakeEither_0<_i5.Failure, List<_i6.MealsData>>()))
+          as _i4.Future<_i2.Either<_i5.Failure, List<_i6.MealsData>>>);
   @override
   String toString() => super.toString();
 }

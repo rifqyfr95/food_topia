@@ -57,6 +57,15 @@ class ListLoaded extends MealsDataState {
   List<Object?> get props => [meals];
 }
 
+class LocalListLoaded extends MealsDataState {
+  final List<MealsData> meals;
+
+  LocalListLoaded({required this.meals});
+  @override
+  // TODO: implement props
+  List<Object?> get props => [meals];
+}
+
 class Error extends MealsDataState {
   final String message;
 

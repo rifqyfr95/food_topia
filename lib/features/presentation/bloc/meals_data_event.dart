@@ -38,3 +38,10 @@ class UpdateMealsDataForByIdWithoutFavourites extends MealsDataEvent {
   UpdateMealsDataForByIdWithoutFavourites(this.mealsId);
 
 }
+
+
+class GetLocalMealsForData extends MealsDataEvent {
+  GetLocalMealsForData();
+
+
+}

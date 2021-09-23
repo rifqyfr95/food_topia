@@ -7,6 +7,7 @@ import 'package:food_topia/features/data/datasources/meals_data_remote_data_sour
 import 'package:food_topia/features/data/datasources/meals_data_local_data_source_impl.dart';
 import 'package:food_topia/features/data/repositories/meals_data_repository_impl.dart';
 import 'package:food_topia/features/domain/repositories/meals_data_repository.dart';
+import 'package:food_topia/features/domain/usecases/get_local_list_meals_data.dart';
 import 'package:food_topia/features/domain/usecases/get_meals_data.dart';
 import 'package:food_topia/features/domain/usecases/get_meals_data_by_id.dart';
 import 'package:food_topia/features/domain/usecases/update_meals_data.dart';
@@ -21,12 +22,13 @@ final sl = GetIt.instance;
 final db = FoodtopiaDatabase();
 
 Future<void> init() async {
-  sl.registerFactory(() => MealsDataBloc(sl(), sl(),sl(),sl(),sl(), sl(), sl()));
+  sl.registerFactory(() => MealsDataBloc(sl(), sl(),sl(),sl(),sl(), sl(), sl(), sl()));
   sl.registerLazySingleton(() => GetMealsDataById(sl()));
   sl.registerLazySingleton(() => GetMealsData(sl()));
   sl.registerLazySingleton(() => UpdateMealsData(sl()));
   sl.registerLazySingleton(() => UpdateMealsDataWithoutFavourites(sl()));
   sl.registerLazySingleton(() => UpdateMealsDataByIdWithoutFavourites(sl()));
+  sl.registerLazySingleton(() => GetLocalListMealsData(sl()));
   sl.registerLazySingleton(() => NetworkInfoImpl(sl()));
   sl.registerLazySingleton(() => InputConverter());
   sl.registerLazySingleton<MealsDataRepository>(

@@ -44,7 +44,6 @@ class _FoodListPageState extends State<FoodListPage> {
 
   @override
   Widget build(BuildContext context) {
-    loadSharedPref();
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -87,14 +86,18 @@ class _FoodListPageState extends State<FoodListPage> {
 
   BlocProvider<MealsDataBloc> buildBody(BuildContext context) {
     return BlocProvider(
-      create: (_) => di.sl<MealsDataBloc>(),
+      create: (_) {
+        loadSharedPref();
+        return di.sl<MealsDataBloc>();
+      } ,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           BlocBuilder<MealsDataBloc, MealsDataState>(
             builder: (context, state) {
               if (state is Empty) {
-                dispatchListMealsWithoutFavourites(context);
+                dispatchListMeals(context);
+                dispatchLocalListMeals(context);
                 return Container(
                   height: MediaQuery.of(context).size.height / 3,
                   child: Center(
@@ -104,16 +107,18 @@ class _FoodListPageState extends State<FoodListPage> {
               } else if (state is Loading) {
                 return LoadingWidget();
               } else if (state is ListLoaded) {
-                if(!sharedPreferences.containsKey("DATA_FIRST_LOADED")){
-                  sharedPreferences.setInt("DATA_FIRST_LOADED", 1);
-                }
-                print("tes 1 ${state.meals[0].mealsFavourite} ");
+                print("tes 1 ${state.meals[0].mealsFavourite} ${state.meals.length} ");
                 return MealListView(state.meals,1);
               } else if (state is Error) {
                 return MessageDisplay(
                   message: state.message,
                 );
-              } else {
+              }
+              else if (state is LocalListLoaded){
+                print("tes 2 ${state.meals[0].mealsName}  ${state.meals.length} ");
+                return MealListView(state.meals,1);
+              }
+              else {
                 return Container();
               }
             },
@@ -126,11 +131,16 @@ class _FoodListPageState extends State<FoodListPage> {
   void dispatchListMeals(BuildContext context) {
     BlocProvider.of<MealsDataBloc>(context).add(GetMealsForData());
   }
+
+  void dispatchLocalListMeals(BuildContext context) {
+    BlocProvider.of<MealsDataBloc>(context).add(GetLocalMealsForData());
+  }
+
   void dispatchListMealsWithoutFavourites(BuildContext context) {
     BlocProvider.of<MealsDataBloc>(context).add(UpdateMealsDataForWithoutFavourites());
   }
 
-  loadSharedPref() async {
+  void loadSharedPref() async {
     sharedPreferences = await SharedPreferences.getInstance();
   }
 

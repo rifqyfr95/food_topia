@@ -67,5 +67,13 @@ class MockMealsDataRepository extends _i1.Mock
                   _FakeEither_0<_i5.Failure, _i6.MealsData>()))
           as _i4.Future<_i2.Either<_i5.Failure, _i6.MealsData>>);
   @override
+  _i4.Future<_i2.Either<_i5.Failure, List<_i6.MealsData>>>
+      getLocalListMealsData() => (super.noSuchMethod(
+              Invocation.method(#getLocalListMealsData, []),
+              returnValue:
+                  Future<_i2.Either<_i5.Failure, List<_i6.MealsData>>>.value(
+                      _FakeEither_0<_i5.Failure, List<_i6.MealsData>>()))
+          as _i4.Future<_i2.Either<_i5.Failure, List<_i6.MealsData>>>);
+  @override
   String toString() => super.toString();
 }

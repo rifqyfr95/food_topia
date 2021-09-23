@@ -75,7 +75,8 @@ class _FoodFavouritesPageState extends State<FoodFavouritesPage> {
           BlocBuilder<MealsDataBloc, MealsDataState>(
             builder: (context, state) {
               if (state is Empty) {
-                dispatchListMealsWithoutFavourites(context);
+                // dispatchListMeals(context);
+                dispatchLocalListMeals(context);
                 return Container(
                   height: MediaQuery.of(context).size.height / 3,
                   child: Center(
@@ -84,15 +85,25 @@ class _FoodFavouritesPageState extends State<FoodFavouritesPage> {
                 );
               } else if (state is Loading) {
                 return LoadingWidget();
-              } else if (state is ListLoaded) {
+              }
+              // else if (state is ListLoaded) {
+              //   return MealListView(state.meals, 2);
+              // }
+              else if (state is LocalListLoaded){
+                print("tes 2 fav ${state.meals[0].mealsName} ${state.meals.length}");
                 List<MealsData> data = [];
                 state.meals.forEach((element) {
+                  if(element.mealsId == "52767"){
+                    print("test test ${element.mealsFavourite}");
+                  }
                   if(element.mealsFavourite == 1){
                     data.add(element);
                   }
                 });
-                return MealListView(data, 2);
-              } else if (state is Error) {
+                // print("test 3 fav "+data[0].mealsName);
+                return MealListView(data,2);
+              }
+              else if (state is Error) {
                 return MessageDisplay(
                   message: state.message,
                 );
@@ -108,6 +119,10 @@ class _FoodFavouritesPageState extends State<FoodFavouritesPage> {
 
   void dispatchListMeals(BuildContext context) {
     BlocProvider.of<MealsDataBloc>(context).add(GetMealsForData());
+  }
+
+  void dispatchLocalListMeals(BuildContext context) {
+    BlocProvider.of<MealsDataBloc>(context).add(GetLocalMealsForData());
   }
 
   void dispatchListMealsWithoutFavourites(BuildContext context) {

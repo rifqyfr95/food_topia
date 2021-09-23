@@ -22,6 +22,11 @@ class Meals extends Table {
       text().withLength(min: 0, max: 9999).withDefault(const Constant(""))();
 
   IntColumn get mealsFavourite => integer().withDefault(const Constant(0))();
+
+  @override
+  Set<Column>? get primaryKey => {
+    mealsId
+  };
 }
 
 LazyDatabase _openConnection() {
@@ -43,17 +48,22 @@ class FoodtopiaDatabase extends _$FoodtopiaDatabase {
   // you should bump this number whenever you change or add a table definition. Migrations
   // are covered later in this readme.
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 7;
 
   Future<List<Meal>> getAllMeals() => select(meals).get();
 
-  Future<List<Meal>> getMealsById(String id) {
-    return (select(meals)..where((tbl) => tbl.mealsId.equals(id))).get();
+  Future<List<Meal>> getMealsById(String id) async {
+    late List<Meal> data;
+    data = await (select(meals)..where((tbl) => tbl.mealsId.equals(id))).get().then((value) {
+      print("Data return "+value[0].mealsName);
+      return value;
+    });
+    return data;
   }
 
 
-  Future<Meal> limitMeals(String id) {
-    return ((select(meals)..where((tbl) => tbl.mealsId.equals(id)))).getSingle();
+  Future<List<Meal>> limitMeals(String id) {
+    return ((select(meals)..where((tbl) => tbl.mealsId.equals(id)))).get();
   }
 
   Future updateMealsWithoutFavorites(Meal entry) {
@@ -68,11 +78,11 @@ class FoodtopiaDatabase extends _$FoodtopiaDatabase {
 
   Future updateMeals(Meal entry) {
     return (update(meals)..where((tbl) => tbl.mealsId.equals(entry.mealsId)))
-        .write(MealsCompanion(mealsFavourite: Value(entry.mealsFavourite)));
+        .write(MealsCompanion(mealsFavourite: Value(entry.mealsFavourite))).then((value) => print(value));
   }
 
   Future upsert(Meal entry){
-    return into(meals).insert(entry, mode: InsertMode.insertOrReplace);
+    return into(meals).insertOnConflictUpdate(entry);
   }
 
   Future deleteMeals(Meal entry) {

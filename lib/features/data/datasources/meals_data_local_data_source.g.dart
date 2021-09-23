@@ -333,7 +333,7 @@ class $MealsTable extends Meals with TableInfo<$MealsTable, Meal> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
+  Set<GeneratedColumn> get $primaryKey => {mealsId};
   @override
   Meal map(Map<String, dynamic> data, {String? tablePrefix}) {
     return Meal.fromData(data, _db,

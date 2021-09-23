@@ -26,8 +26,8 @@ class MealsDataRepositoryImpl implements MealsDataRepository {
         final remoteMealsData =
             await remoteDataSource.getMealsDataById(mealsId);
         var test1 = await localDataSource.updateMealsDataWithoutFavourite(remoteMealsData);
-        // var test2 = await localDataSource.getFavById(mealsId);
-        // test1.mealsFavourite = test2;
+        var test2 = await localDataSource.getFavById(mealsId);
+        test1.mealsFavourite = test2;
         return Right(test1);
       } on ServerException {
         return Left(ServerFailure());
@@ -44,6 +44,7 @@ class MealsDataRepositoryImpl implements MealsDataRepository {
     if (await networkInfo.isConnected) {
       try {
         final remoteMealsData = await remoteDataSource.getListMealsData();
+        print(remoteMealsData[0].mealsName);
         localDataSource.cacheListMealsData(remoteMealsData);
         return Right(remoteMealsData);
       } on ServerException {
@@ -63,10 +64,10 @@ class MealsDataRepositoryImpl implements MealsDataRepository {
   @override
   Future<Either<Failure, MealsData>> updateMeals(String mealsId, int favorites) async {
     try{
-      final remoteMealsData = await remoteDataSource.getMealsDataById(mealsId);
-      remoteMealsData.mealsFavourite = favorites;
-      localDataSource.updateMealsData(remoteMealsData);
-      return Right(remoteMealsData);
+      final localMealsData = await localDataSource.getMealsDataById(mealsId);
+      localMealsData.mealsFavourite = favorites;
+      localDataSource.updateMealsData(localMealsData);
+      return Right(localMealsData);
     } on CacheException {
       return Left(CacheFailure());
     }
@@ -102,6 +103,16 @@ class MealsDataRepositoryImpl implements MealsDataRepository {
       final remoteMealsData = await remoteDataSource.getMealsDataById(mealsId);
       localDataSource.updateMealsDataWithoutFavourite(remoteMealsData);
       return Right(remoteMealsData);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<MealsData>>> getLocalListMealsData() async {
+    try{
+      final localMealsData = await localDataSource.getListMealsData();
+      return Right(localMealsData);
     } on CacheException {
       return Left(CacheFailure());
     }
